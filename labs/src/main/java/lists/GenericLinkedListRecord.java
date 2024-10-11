@@ -41,7 +41,8 @@ public class GenericLinkedListRecord<T> implements GenericList<T> {
 
     private GenericNodeRecord<T> appendRecord(GenericNodeRecord<T> node, T value) {
         // todo: implement this properly!
-        return new GenericNodeRecord<T>(value, null);
+//        return new GenericNodeRecord<T>(value, null);
+        return prependRecord(node, value);
     }
 
     public int length() {

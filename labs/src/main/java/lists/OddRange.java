@@ -22,24 +22,31 @@ public class OddRange implements Iterable<Integer> {
         private int end;
 
         public OddRangeIterator(int start, int end) {
-            // todo: implement this properly
+            if (start % 2 == 0){
+                this.current = start + 1;
+            }
+            else{
+                this.current = start;
+            }
+
+            this.end = end;
         }
 
         @Override
         public boolean hasNext() {
-            // implement this properly
-            return false;
+            return this.current < this.end;
         }
 
         @Override
         public Integer next() {
-            // implement this properly
-            return 0;
+            int value = current;
+            current = current + 2;
+            return value;
         }
     }
 
     public static void main(String[] args) {
-        OddRange range = new OddRange(0, 10);
+        OddRange range = new OddRange(-6, 5);
         for (int num : range) {
             System.out.println(num);
         }

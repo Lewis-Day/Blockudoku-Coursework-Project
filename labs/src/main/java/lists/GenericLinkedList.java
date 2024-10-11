@@ -18,19 +18,41 @@ class GenericNode<T> {
 public class GenericLinkedList<T> implements GenericList<T> {
     GenericNode<T> head;
     int len;
+    GenericNode<T> nextAvailableNode;
 
     public GenericLinkedList() {
         head = null;
         len = 0;
+
     }
 
     public boolean contains(T value) {
         // todo: implement this properly
+
+        GenericNode<T> ptr = this.head;
+
+        while(ptr != null){
+            if(ptr.value == value){
+                return true;
+            }
+            ptr = ptr.next;
+        }
         return false;
+
     }
 
     public void append(T value) {
         // todo: implement an efficient append method
+
+        if(this.head == null){
+            this.head = new GenericNode<T>(value);
+            nextAvailableNode = this.head;
+        }
+        else{
+            nextAvailableNode.next = new GenericNode<T>(value);
+            nextAvailableNode = nextAvailableNode.next;
+        }
+        this.len++;
     }
 
     public int length() {

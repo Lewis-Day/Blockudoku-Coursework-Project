@@ -8,6 +8,7 @@ class GenericArrayList<T> implements GenericList<T> {
 
     T[] values = (T[]) new Object[initialCapacity];
     int len = 0;
+    int scalingFactor = 2;
 
     public boolean contains(T value) {
         for (int i = 0; i < len; i++) {
@@ -19,13 +20,32 @@ class GenericArrayList<T> implements GenericList<T> {
     }
 
     public void append(T value) {
-        T[] newValues = (T[]) new Object[len + 1];
-        for (int i = 0; i < len; i++) {
-            newValues[i] = values[i];
+//        Inefficient Version
+//        T[] newValues = (T[]) new Object[len + 1];
+//        for (int i = 0; i < len; i++) {
+//            newValues[i] = values[i];
+//        }
+//        newValues[len] = value;
+//        values = newValues;
+//        len++;
+
+        // My efficient version
+        if (values.length == len){
+            boostArray();
         }
-        newValues[len] = value;
-        values = newValues;
+        values[len] = value;
         len++;
+
+    }
+
+    private void boostArray(){
+
+        T[] newArray = (T[]) new Object[len*scalingFactor];
+
+        for(int i = 0; i<values.length; i++){
+            newArray[i] = values[i];
+        }
+        values = newArray;
     }
 
     @Override
