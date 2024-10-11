@@ -1,11 +1,13 @@
 package lists;
 
-public class IntArrayList implements IntList {
+public class EfficientIntArrayList implements IntList {
     int[] values;
     int len;
+    int startingLength = 10;
+    int scalingFactor = 2;
 
-    public IntArrayList() {
-        values = new int[0];
+    public EfficientIntArrayList() {
+        values = new int[startingLength];
         len = 0;
     }
 
@@ -22,13 +24,22 @@ public class IntArrayList implements IntList {
 
     public void append(int value) {
         // this is inefficient but leave as is for now
-        int[] newValues = new int[len + 1];
-        for (int i = 0; i < len; i++) {
-            newValues[i] = values[i];
+        if (values.length == len){
+            boostArray();
         }
-        newValues[len] = value;
-        values = newValues;
+        values[len] = value;
         len++;
+
+    }
+
+    private void boostArray(){
+
+        int[] newArray = new int[len*scalingFactor];
+
+        for(int i = 0; i<values.length; i++){
+            newArray[i] = values[i];
+        }
+        values = newArray;
     }
 
     public int length() {

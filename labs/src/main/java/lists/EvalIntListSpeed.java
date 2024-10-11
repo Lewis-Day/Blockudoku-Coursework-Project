@@ -25,11 +25,15 @@ public class EvalIntListSpeed {
         IntList[] lists = {
                 new IntArrayList(),
                 new IntLinkedList(),
+//                new EfficientIntArrayList(),
+//                new EfficientIntLinkedList(),
         };
 
         List<Supplier<IntList>> listMakers = new ArrayList<>();
         listMakers.add(IntArrayList::new);
         listMakers.add(IntLinkedList::new);
+//        listMakers.add(EfficientIntArrayList::new);
+//        listMakers.add(EfficientIntLinkedList::new);
 
         int initial_n = 10000;
         int n_step = 10000;

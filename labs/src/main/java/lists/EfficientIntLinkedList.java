@@ -1,12 +1,14 @@
 package lists;
 
-class IntLinkedList implements IntList {
+class EfficientIntLinkedList implements IntList {
     IntNode head;
     int len;
+    IntNode nextAvailableNode;
 
-    public IntLinkedList() {
+    public EfficientIntLinkedList() {
         head = null;
         len = 0;
+        nextAvailableNode = null;
     }
 
     public boolean contains(int value) {
@@ -26,22 +28,15 @@ class IntLinkedList implements IntList {
 
     public void append(int value) {
 
-        if(len == 0){
+        if(this.head == null){
             this.head = new IntNode(value);
+            nextAvailableNode = this.head;
         }
-
         else{
-            IntNode ptr = this.head;
-
-            while(ptr.next != null){
-                ptr = ptr.next;
-            }
-
-            ptr.next = new IntNode(value);
+            nextAvailableNode.next = new IntNode(value);
+            nextAvailableNode = nextAvailableNode.next;
         }
-
-        this.len = this.len + 1;
-
+        this.len++;
     }
 
     public int length() {
@@ -49,23 +44,15 @@ class IntLinkedList implements IntList {
     }
 
     public static void main(String[] args) {
-        IntLinkedList list = new IntLinkedList();
+        EfficientIntLinkedList list = new EfficientIntLinkedList();
         list.append(1);
         list.append(2);
         list.append(3);
         System.out.println(list.contains(2));
         System.out.println(list.contains(4));
         System.out.println(list.length());
+
     }
 }
 
-// a IntNode for each element in LinkedList
-class IntNode {
-    int value;
-    IntNode next;
 
-    public IntNode(int value) {
-        this.value = value;
-        this.next = null;
-    }
-}
