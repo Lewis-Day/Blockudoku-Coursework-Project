@@ -1,20 +1,27 @@
 package stats;
 
+import lists.GenericArrayList;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class RunningSummary implements StatSummary {
     // todo: might some fields be useful here?  :)
 
+    final private GenericArrayList<Number> values = new GenericArrayList<Number>();
+
     @Override
     public double mean() {
-        // todo: implement this
-        return 0;
+        if (n() == 0) {
+            throw new NotEnoughDataException("Need at least one value for mean, we have zero");
+        }
+        return sum() / n();
     }
 
     @Override
     public int n() {
         // todo: implement this
-        return 0;
+        return values.length();
     }
 
     @Override
@@ -30,8 +37,8 @@ public class RunningSummary implements StatSummary {
 
     @Override
     public StatSummary add(double value) {
-        // todo: implement this
-        return null;
+        values.append(value);
+        return this;
     }
 
     @Override

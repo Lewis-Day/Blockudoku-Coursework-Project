@@ -25,19 +25,27 @@ public class EvalIntListSpeed {
         IntList[] lists = {
                 new IntArrayList(),
                 new IntLinkedList(),
-//                new EfficientIntArrayList(),
-//                new EfficientIntLinkedList(),
+                new EfficientIntArrayList(),
+                new EfficientIntLinkedList(),
+                new GenIntListWrapper(new GenericArrayList<Integer>()),
+                new GenIntListWrapper(new GenericLinkedList<Integer>()),
+                new GenIntListWrapper(new GenericLinkedListRecord<Integer>()),
+
         };
 
         List<Supplier<IntList>> listMakers = new ArrayList<>();
         listMakers.add(IntArrayList::new);
         listMakers.add(IntLinkedList::new);
-//        listMakers.add(EfficientIntArrayList::new);
-//        listMakers.add(EfficientIntLinkedList::new);
+        listMakers.add(EfficientIntArrayList::new);
+        listMakers.add(EfficientIntLinkedList::new);
+        listMakers.add(() -> new GenIntListWrapper(new GenericArrayList<Integer>()));
+        listMakers.add(() -> new GenIntListWrapper(new GenericLinkedList<Integer>()));
+        listMakers.add(() -> new GenIntListWrapper(new GenericLinkedListRecord<Integer>()));
 
-        int initial_n = 10000;
-        int n_step = 10000;
-        int n_max = 100000;
+        int nForX = 1000;
+        int initial_n = nForX;
+        int n_step = nForX;
+        int n_max = 10 * nForX;
         List<Integer> xValues = new ArrayList<>();
         for (int n = initial_n; n <= n_max; n += n_step) {
             xValues.add(n);
@@ -45,7 +53,12 @@ public class EvalIntListSpeed {
 
         Map<String, List<Double>> results = new HashMap<>();
         for (Supplier<IntList> listMaker : listMakers) {
-            String seriesName = listMaker.get().getClass().getName();
+            String seriesName = listMaker.get().getClass().getSimpleName();
+
+            if(seriesName.equals("GenIntListWrapper")){
+                seriesName = listMaker.get().toString();
+            }
+
             List<Double> series = new ArrayList<>();
             System.out.println("List class: " + seriesName);
             for (int n = initial_n; n <= n_max; n += n_step) {

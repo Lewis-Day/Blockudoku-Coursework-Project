@@ -3,7 +3,7 @@ package lists;
 
 import java.util.Iterator;
 
-class GenericArrayList<T> implements GenericList<T> {
+public class GenericArrayList<T> implements GenericList<T> {
     static int initialCapacity = 10;
 
     T[] values = (T[]) new Object[initialCapacity];

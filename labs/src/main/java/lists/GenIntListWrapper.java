@@ -19,6 +19,10 @@ public class GenIntListWrapper implements IntList {
     // This is wraps a generic list as an IntList
     private final GenericList<Integer> list;
 
+    public String toString(){
+        return this.list.getClass().getSimpleName();
+    }
+
     public GenIntListWrapper(GenericList<Integer> list) {
         this.list = list;
     }

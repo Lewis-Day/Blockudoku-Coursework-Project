@@ -29,7 +29,7 @@ public class JavaPyPlotExample {
             for (int j = 0; j < dataCount; j++) {
                 data.add(random.nextDouble() * 100);
             }
-            dataSeries.put("Series " + (i + 1), data);
+             dataSeries.put("Series " + (i + 1), data);
         }
         return dataSeries;
     }

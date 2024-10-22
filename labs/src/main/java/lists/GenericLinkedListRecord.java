@@ -18,7 +18,7 @@ public class GenericLinkedListRecord<T> implements GenericList<T> {
     public boolean contains(T value) {
         GenericNodeRecord<T> current = head;
         while (current != null) {
-            if (current.value() == value) {
+            if (current.value().equals(value)) {
                 return true;
             }
             current = current.next();
@@ -42,7 +42,14 @@ public class GenericLinkedListRecord<T> implements GenericList<T> {
     private GenericNodeRecord<T> appendRecord(GenericNodeRecord<T> node, T value) {
         // todo: implement this properly!
 //        return new GenericNodeRecord<T>(value, null);
-        return prependRecord(node, value);
+//        return prependRecord(node, value);
+        if (node == null) {
+            return new GenericNodeRecord<T>(value, null);
+        }
+        else{
+            return new GenericNodeRecord<T>(node.value(), appendRecord(node.next(), value));
+        }
+
     }
 
     public int length() {
