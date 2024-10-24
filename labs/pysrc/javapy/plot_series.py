@@ -44,6 +44,8 @@ def main():
         "Series 3": [1, 4, 9, 16, 25, 36]
     }
 
+    print(matplotlib.matplotlib_fname())
+
     # Convert the data to JSON
     json_data = json.dumps(sample_data)
 
