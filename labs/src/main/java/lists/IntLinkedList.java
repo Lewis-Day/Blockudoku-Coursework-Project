@@ -1,6 +1,6 @@
 package lists;
 
-class IntLinkedList implements IntList {
+public class IntLinkedList implements IntList {
     IntNode head;
     int len;
 

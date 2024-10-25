@@ -21,6 +21,7 @@ public class EvalIntListSpeed {
         return end - start;
     }
 
+
     public static void main(String[] args) {
         IntList[] lists = {
                 new IntArrayList(),
@@ -42,10 +43,9 @@ public class EvalIntListSpeed {
         listMakers.add(() -> new GenIntListWrapper(new GenericLinkedList<Integer>()));
         listMakers.add(() -> new GenIntListWrapper(new GenericLinkedListRecord<Integer>()));
 
-        int nForX = 1000;
-        int initial_n = nForX;
-        int n_step = nForX;
-        int n_max = 10 * nForX;
+        int initial_n = 1000;
+        int n_step = 1000;
+        int n_max = 10000;
         List<Integer> xValues = new ArrayList<>();
         for (int n = initial_n; n <= n_max; n += n_step) {
             xValues.add(n);

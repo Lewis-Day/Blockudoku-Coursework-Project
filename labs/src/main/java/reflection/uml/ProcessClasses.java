@@ -1,5 +1,8 @@
 package reflection.uml;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import reflection.uml.ReflectionData.*;
 
@@ -8,17 +11,38 @@ public class ProcessClasses {
     List<Link> getSuperclasses(Class<?> c, List<Class<?>> javaClasses) {
         // todo: implement this method
 
-       for (Class<?> javaClass : javaClasses) {
-           System.out.println(c.getSuperclass().getSimpleName());
-       }
+        List<Link> links = new ArrayList<>();
+        Class<?>[] interfaces = c.getInterfaces();
 
-       return null;
+        for(Class<?> javaClass : javaClasses) {
+            if(c.getSuperclass().getSimpleName().equals(javaClass.getSimpleName())){
+                links.add(new Link(c.getSimpleName(), javaClass.getSimpleName(), LinkType.SUPERCLASS));
+            }
+
+            for(Class<?> anInterface : interfaces){
+                if(anInterface.getSimpleName().equals(javaClass.getSimpleName())){
+                    links.add(new Link(c.getSimpleName(), anInterface.getSimpleName(), LinkType.SUPERCLASS));
+                }
+            }
+
+        }
+
+        return links;
 
     }
 
+
     ClassType getClassType(Class<?> c) {
         // todo: fix this broken implementation
-        return ClassType.CLASS;
+        if(c.isInterface()){
+            return ClassType.INTERFACE;
+        }
+        else if(Modifier.isAbstract(c.getModifiers())){
+            return ClassType.ABSTRACT;
+        }
+        else{
+            return ClassType.CLASS;
+        }
     }
 
     List<FieldData> getFields(Class<?> c) {
@@ -31,17 +55,58 @@ public class ProcessClasses {
 
     List<MethodData> getMethods(Class<?> c) {
         // todo: implement this method
-        return null;
+        List<MethodData> methodData = new ArrayList<>();
+
+        Method[] methods = c.getDeclaredMethods();
+        for(Method method : methods){
+            if(!method.isSynthetic()){
+                String returnType = method.getReturnType().getSimpleName();
+                String name = method.getName();
+                methodData.add(new MethodData(name, returnType));
+            }
+
+        }
+        return methodData;
     }
 
     List<Link> getFieldDependencies(Class<?> c, List<Class<?>> javaClasses) {
         // todo: implement this method - return dependent classes that are in javaClasses
-        return null;
+
+        List<Link> dependencies = new ArrayList<>();
+
+        for(Class<?> javaClass : javaClasses){
+
+            for (Field declaredField : c.getDeclaredFields()) {
+                if(declaredField.getType().equals(javaClass)){
+                    dependencies.add(new Link(c.getSimpleName(), javaClass.getSimpleName(), LinkType.DEPENDENCY));
+                }
+            }
+
+
+        }
+
+        return dependencies;
+
     }
 
     List<Link> getMethodDependencies(Class<?> c, List<Class<?>> javaClasses) {
         // todo: implement this method - return dependent classes that are in javaClasses
-        return null;
+
+        List<Link> methodDependencies = new ArrayList<>();
+
+        for(Class<?> javaClass : javaClasses){
+
+            for (Method method : c.getDeclaredMethods()) {
+                if(method.getReturnType().equals(javaClass)){
+                    methodDependencies.add(new Link(c.getSimpleName(), javaClass.getSimpleName(), LinkType.DEPENDENCY));
+                }
+            }
+
+
+        }
+
+        return methodDependencies;
+
     }
 
     DiagramData process(List<Class<?>> javaClasses) {

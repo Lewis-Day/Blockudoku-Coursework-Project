@@ -7,6 +7,7 @@ import jep.Jep;
 import jep.JepConfig;
 import jep.JepException;
 import jep.SubInterpreter;
+import lists.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +18,20 @@ import java.util.*;
 import java.util.List;
 import javax.imageio.ImageIO;
 import java.util.Base64;
+import java.util.function.Supplier;
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
+record GraphDataResultSet(
+        List<Integer> xValues,
+        Map<String, List<Double>> results
+) {}
+
 
 public class JavaPyPlotExample {
 
@@ -34,6 +49,59 @@ public class JavaPyPlotExample {
         return dataSeries;
     }
 
+    static long time_n_appends(IntList list, int n) {
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < n; i++) {
+            list.append(i);
+        }
+        long end = System.currentTimeMillis();
+        return end - start;
+    }
+
+    public static GraphDataResultSet GenerateResults(int numRuns){
+        List<Supplier<IntList>> listMakers = new ArrayList<>();
+//        listMakers.add(IntArrayList::new);
+//        listMakers.add(IntLinkedList::new);
+        listMakers.add(EfficientIntArrayList::new);
+        listMakers.add(EfficientIntLinkedList::new);
+//        listMakers.add(() -> new GenIntListWrapper(new GenericArrayList<Integer>()));
+//        listMakers.add(() -> new GenIntListWrapper(new GenericLinkedList<Integer>()));
+//        listMakers.add(() -> new GenIntListWrapper(new GenericLinkedListRecord<Integer>()));
+
+        int initial_n = 1000;
+        int n_step = 1000;
+        int n_max = 100000;
+        List<Integer> xValues = new ArrayList<>();
+        for (int n = initial_n; n <= n_max; n += n_step) {
+            xValues.add(n);
+        }
+
+        Map<String, List<Double>> results = new HashMap<>();
+        for (Supplier<IntList> listMaker : listMakers) {
+            String seriesName = listMaker.get().getClass().getSimpleName();
+
+            if(seriesName.equals("GenIntListWrapper")){
+                seriesName = listMaker.get().toString();
+            }
+
+            List<Double> series = new ArrayList<>();
+            System.out.println("List class: " + seriesName);
+            for (int n = initial_n; n <= n_max; n += n_step) {
+                double totalTime = 0;
+                System.out.println(n);
+                for(int k= 0; k < numRuns; k++){
+                    long t = time_n_appends(listMaker.get(), n);
+                    totalTime = totalTime + t;
+                }
+                double avgTime = totalTime / numRuns;
+                series.add((double) avgTime);
+            }
+            results.put(seriesName, series);
+        }
+        return new GraphDataResultSet(xValues, results);
+    }
+
+
     // Display the plot image
     public static void displayImage(BufferedImage img) {
         JFrame frame = new JFrame("Plot");
@@ -47,11 +115,12 @@ public class JavaPyPlotExample {
     public static void main(String[] args) {
         try {
             // Generate random data
-            Map<String, List<Double>> dataSeries = generateRandomData(3, 100);
+//            Map<String, List<Double>> dataSeries = generateRandomData(3, 100);
+            GraphDataResultSet results = GenerateResults(100);
 
             // Convert the data to JSON using GSON
             Gson gson = new GsonBuilder().create();
-            String jsonData = gson.toJson(dataSeries);
+            String jsonData = gson.toJson(results);
             System.out.println("Sending data to Python: " + jsonData);
 
             JepConfig config = new JepConfig();

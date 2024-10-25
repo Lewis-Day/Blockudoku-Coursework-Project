@@ -2,6 +2,9 @@ package reflection.gson;
 
 import com.google.gson.Gson;
 
+import java.util.HashSet;
+import java.util.Set;
+
 class MyObject {
     MyObject ref;
     String name;
@@ -29,11 +32,10 @@ public class CyclicGsonExample {
 
         Gson gson = new Gson();
 
-        if(gson.toJson(obj) == null){
+        if(obj.ref.ref == obj){
             throw new CyclicGraphException();
         }
         else{
-
             return gson.toJson(obj);
         }
 

@@ -1,6 +1,6 @@
 package lists;
 
-class EfficientIntLinkedList implements IntList {
+public class EfficientIntLinkedList implements IntList {
     IntNode head;
     int len;
     IntNode nextAvailableNode;
