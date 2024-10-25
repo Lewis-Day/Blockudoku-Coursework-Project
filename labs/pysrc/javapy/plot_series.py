@@ -22,7 +22,6 @@ def plot_and_return_image(json_data):
 
     plt.xlabel('Number of Appends')
     plt.ylabel('Time (ms)')
-    # plt.yscale("symlog")
     plt.title('Graphs for list implementations')
     plt.legend()
 
