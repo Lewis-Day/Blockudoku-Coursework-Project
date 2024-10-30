@@ -64,8 +64,8 @@ public class JavaPyPlotExample {
 //        listMakers.add(IntLinkedList::new);
         listMakers.add(EfficientIntArrayList::new);
         listMakers.add(EfficientIntLinkedList::new);
-//        listMakers.add(() -> new GenIntListWrapper(new GenericArrayList<Integer>()));
-//        listMakers.add(() -> new GenIntListWrapper(new GenericLinkedList<Integer>()));
+        listMakers.add(() -> new GenIntListWrapper(new GenericArrayList<Integer>()));
+        listMakers.add(() -> new GenIntListWrapper(new GenericLinkedList<Integer>()));
 //        listMakers.add(() -> new GenIntListWrapper(new GenericLinkedListRecord<Integer>()));
 
         int initial_n = 1000;
@@ -116,7 +116,7 @@ public class JavaPyPlotExample {
         try {
             // Generate random data
 //            Map<String, List<Double>> dataSeries = generateRandomData(3, 100);
-            GraphDataResultSet results = GenerateResults(100);
+            GraphDataResultSet results = GenerateResults(25);
 
             // Convert the data to JSON using GSON
             Gson gson = new GsonBuilder().create();
