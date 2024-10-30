@@ -6,7 +6,7 @@ import reflection.uml.ReflectionData.*;
 public class UMLLayout {
 
     // Record to store the layout of each class
-    public record ClassLayout(double centerX, double centerY, double width, double height, double fieldsH, double methodsH, List<FieldData> fields, List<MethodData> methods) {}
+    public record ClassLayout(double centerX, double centerY, double width, double height, double fieldsH, double methodsH, List<FieldData> fields, List<MethodData> methods, ArrayList<Link> classLinks, ClassType type) {}
 
     private final double classWidth = 150.0;
     private final double heightFac = 30.0;
@@ -34,7 +34,18 @@ public class UMLLayout {
             double y = depth * (verticalSpacing + heightFac);
             ClassData classData = classDataMap.get(className);
             double height = heightFac * (1 + classData.fields().size() + classData.methods().size());
-            layout.put(classData.className(), new ClassLayout(x + classWidth / 2, y + height / 2, classWidth, height, classData.fields().size(), classData.methods().size(), classData.fields(), classData.methods()));
+
+            ArrayList<Link> classLinks = new ArrayList<>();
+
+            for (Link links : diagram.links()) {
+                if(classData.className().equals(links.from())){
+                    classLinks.add(links);
+                }
+            }
+
+            System.out.println(classLinks);
+
+            layout.put(classData.className(), new ClassLayout(x + classWidth / 2, y + height / 2, classWidth, height, classData.fields().size(), classData.methods().size(), classData.fields(), classData.methods(), classLinks, classData.classType()));
 
             nextXPositionForDepth.put(depth, x + classWidth + horizontalSpacing);
         }
