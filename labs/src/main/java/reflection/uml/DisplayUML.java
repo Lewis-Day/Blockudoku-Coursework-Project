@@ -6,13 +6,17 @@ package reflection.uml;
  * It will be based on the UML diagram layout from the
  * Map<String, ClassLayout> calculateLayout(DiagramData diagram) method.
  *
- * Hence all the work we do here is purely in rendering the class diagram,
+ * Hence, all the work we do here is purely in rendering the class diagram,
  * in fact to begin with we will just render the class boxes, not even the lines connecting them.
  */
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.ObjectUtils;
 import reflection.uml.UMLLayout.ClassLayout;
 
 public class DisplayUML extends JPanel {
@@ -22,7 +26,7 @@ public class DisplayUML extends JPanel {
     // Constructor that takes the layout map
     public DisplayUML(Map<String, ClassLayout> layout) {
         this.layout = layout;
-        setPreferredSize(new Dimension(800, 600)); // Set the preferred size for the component
+        setPreferredSize(new Dimension(1200, 800)); // Set the preferred size for the component
     }
 
     // Override the paintComponent method to draw the class boxes
@@ -40,36 +44,108 @@ public class DisplayUML extends JPanel {
             String className = entry.getKey();
             ClassLayout cl = entry.getValue();
 
+
             // Get the position and size of the class box
             double x = cl.centerX() - cl.width() / 2;
             double y = cl.centerY() - cl.height() / 2;
             double width = cl.width();
             double height = cl.height();
 
+
+
             // Draw the class box (rectangle)
-            g2d.drawRect((int) x, (int) y, (int) width, (int) height);
+
+
 
             // Draw the class name centered in the box
             FontMetrics fm = g2d.getFontMetrics();
             int textWidth = fm.stringWidth(className);
+            int largestTextWidth = textWidth;
             int textX = (int) (x + (width - textWidth) / 2);
             int textY = (int) (y + fm.getAscent());
+
+
+            //Get position and size of the fields box
+            double fieldsY = textY + fm.getHeight() + 10;
+            double fieldsHeight = cl.fieldsH();
+
+            //Get position and size of the fields box
+
+            double methodsHeight = cl.methodsH();
+
+
+
+            boolean isFieldsEmpty = false;
+            int fieldsTextY = (int)(fieldsY + fm.getAscent()+10);
+//            if(cl.fields().isEmpty()){
+//                g2d.drawRect((int)x, (int)fieldsY, (int)width, (int)0);
+//            }
+//            else{
+
+                for(ReflectionData.FieldData fields : cl.fields()){
+                    String text = fields.name() + " : " + fields.type();
+                    if(fm.stringWidth(text) > largestTextWidth ){
+                        largestTextWidth = fm.stringWidth(text);
+                    }
+
+                    g2d.drawString(text, (int)x+5, fieldsTextY);
+                    fieldsTextY = fieldsTextY + fm.getHeight();
+
+                }
+
+
+
+//            }
+
+
+
+
+
+            double methodsY = fieldsTextY;
+
+            int methodsTextY = (int)(methodsY + fm.getAscent()+10);
+            for(ReflectionData.MethodData methods : cl.methods()){
+                String text = methods.name() + "() : " + methods.returnType();
+                if(fm.stringWidth(text) > largestTextWidth ){
+                    largestTextWidth = fm.stringWidth(text);
+                }
+                g2d.drawString(text, (int)x+5, methodsTextY);
+                methodsTextY = methodsTextY + fm.getHeight();
+            }
+
+
+            g2d.drawRect((int) x, (int) y, (int) largestTextWidth + 10, (int) (methodsTextY-y));
+            g2d.drawRect((int)x, (int)fieldsY, (int)largestTextWidth + 10, (int)(fieldsTextY - fieldsY));
+            g2d.drawRect((int)x, (int)methodsY, (int)largestTextWidth + 10, (int)(methodsTextY-methodsY));
+            textX = (int) (x + ((largestTextWidth + 10) - textWidth) / 2);
             g2d.drawString(className, textX, textY);
+
         }
     }
 
     // Main method to set up a simple frame and display the panel
     public static void main(String[] args) {
         // Mock-up example layout to display
-        Map<String, ClassLayout> exampleLayout = Map.of(
-                "MyShape", new ClassLayout(200, 100, 150, 60),
-                "MyCircle", new ClassLayout(200, 200, 150, 120),
-                "MyEllipse", new ClassLayout(400, 200, 150, 90),
-                "Connector", new ClassLayout(300, 300, 150, 60)
-        );
+//        Map<String, ClassLayout> exampleLayout = Map.of(
+//                "MyShape", new ClassLayout(200, 100, 150, 60, 30, 20,),
+//                "MyCircle", new ClassLayout(200, 200, 150, 120, 30, 20),
+//                "MyEllipse", new ClassLayout(400, 200, 150, 90, 30, 20),
+//                "Connector", new ClassLayout(300, 300, 150, 60, 30, 20)
+//
+//        );
+        List<Class<?>> classes = new ArrayList<>();
+        classes.add(MyShape.class);
+        classes.add(MyCircle.class);
+        classes.add(MyCircle.InnerStatic.class);
+        classes.add(MyEllipse.class);
+        classes.add(Connector.class);
+        System.out.println(classes);
+        System.out.println();
+        ReflectionData.DiagramData dd = new ProcessClasses().process(classes);
 
         // Create the panel to display the UML diagram
-        DisplayUML display = new DisplayUML(exampleLayout);
+        Map<String, ClassLayout> layout = new UMLLayout().calculateLayout(dd);
+        DisplayUML display = new DisplayUML(layout);
 
         // Create a frame to hold the panel
         JFrame frame = new JFrame("UML Class Diagram");

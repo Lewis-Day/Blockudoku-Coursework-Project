@@ -6,11 +6,11 @@ import reflection.uml.ReflectionData.*;
 public class UMLLayout {
 
     // Record to store the layout of each class
-    public record ClassLayout(double centerX, double centerY, double width, double height) {}
+    public record ClassLayout(double centerX, double centerY, double width, double height, double fieldsH, double methodsH, List<FieldData> fields, List<MethodData> methods) {}
 
     private final double classWidth = 150.0;
     private final double heightFac = 30.0;
-    private final double verticalSpacing = 50.0;
+    private final double verticalSpacing = 200.0;
     private final double horizontalSpacing = 50.0;
 
     // Method to calculate the layout
@@ -34,7 +34,7 @@ public class UMLLayout {
             double y = depth * (verticalSpacing + heightFac);
             ClassData classData = classDataMap.get(className);
             double height = heightFac * (1 + classData.fields().size() + classData.methods().size());
-            layout.put(classData.className(), new ClassLayout(x + classWidth / 2, y + height / 2, classWidth, height));
+            layout.put(classData.className(), new ClassLayout(x + classWidth / 2, y + height / 2, classWidth, height, classData.fields().size(), classData.methods().size(), classData.fields(), classData.methods()));
 
             nextXPositionForDepth.put(depth, x + classWidth + horizontalSpacing);
         }

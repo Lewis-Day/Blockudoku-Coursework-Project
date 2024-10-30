@@ -14,8 +14,10 @@ public class ProcessClasses {
         List<Link> links = new ArrayList<>();
         Class<?>[] interfaces = c.getInterfaces();
 
+
         for(Class<?> javaClass : javaClasses) {
-            if(c.getSuperclass().getSimpleName().equals(javaClass.getSimpleName())){
+
+            if((c.getSuperclass() != null) && c.getSuperclass().getSimpleName().equals(javaClass.getSimpleName())){
                 links.add(new Link(c.getSimpleName(), javaClass.getSimpleName(), LinkType.SUPERCLASS));
             }
 
@@ -143,10 +145,15 @@ public class ProcessClasses {
         System.out.println();
         for (ClassData cd : dd.classes()) {
             System.out.println(cd);
+//            List<FieldData> x = cd.fields();
+//            for(FieldData data : x){
+//                System.out.println(data.name() + data.type());
+//            }
         }
         System.out.println();
         for (Link l : dd.links()) {
             System.out.println(l);
         }
+
     }
 }
