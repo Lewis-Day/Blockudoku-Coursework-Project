@@ -37,6 +37,7 @@ public class UMLLayout {
 
             ArrayList<Link> classLinks = new ArrayList<>();
 
+            //Adding links for each class
             for (Link links : diagram.links()) {
                 if(classData.className().equals(links.from())){
                     classLinks.add(links);
@@ -45,6 +46,7 @@ public class UMLLayout {
 
             System.out.println(classLinks);
 
+            //Passing extra data about classes that can be used in DisplayUML - fields, methods and links
             layout.put(classData.className(), new ClassLayout(x + classWidth / 2, y + height / 2, classWidth, height, classData.fields().size(), classData.methods().size(), classData.fields(), classData.methods(), classLinks, classData.classType()));
 
             nextXPositionForDepth.put(depth, x + classWidth + horizontalSpacing);

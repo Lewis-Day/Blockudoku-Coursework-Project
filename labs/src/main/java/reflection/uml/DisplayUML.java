@@ -37,6 +37,7 @@ public class DisplayUML extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        //Hashmaps to hold data about top and bottom x and y values for the class boxes to allow lines to be drawn
         Map<String, Integer> xTop = new HashMap<>();
         Map<String, Integer> yTop = new HashMap<>();
 
@@ -73,7 +74,7 @@ public class DisplayUML extends JPanel {
             double fieldsHeight = cl.fieldsH();
             int fieldsTextY = (int)(fieldsY + fm.getAscent()+10);
 
-
+            //Get each field and display its name and type
             for(ReflectionData.FieldData fields : cl.fields()){
                 String text = fields.name() + " : " + fields.type();
                 if(fm.stringWidth(text) > largestTextWidth ){
@@ -88,6 +89,7 @@ public class DisplayUML extends JPanel {
             double methodsHeight = cl.methodsH();
             double methodsY = fieldsTextY;
 
+            //Get each method and display its name and return type
             int methodsTextY = (int)(methodsY + fm.getAscent()+10);
             for(ReflectionData.MethodData methods : cl.methods()){
                 String text = methods.name() + "() :: " + methods.returnType();
@@ -103,52 +105,64 @@ public class DisplayUML extends JPanel {
             double textPosition = (boxWidth - textWidth) / 2;
             int halfTextWidth = textWidth / 2;
 
-
+            //Draw the main class box
             g2d.drawRect((int) x, (int) y, boxWidth, (int) classBoxHeight);
 
+            //If the class is type CLASS then colour transparent blue
             if(cl.type().equals(ReflectionData.ClassType.CLASS)){
                 g2d.setColor(new Color(0, 0, 255, 50));
                 g2d.fillRect((int) x, (int) y, boxWidth, (int) classBoxHeight);
                 g2d.setColor(Color.BLACK);
             }
 
+            //If the class is an INTERFACE then colour transparent green
             else if(cl.type().equals(ReflectionData.ClassType.INTERFACE)){
                 g2d.setColor(new Color(0, 255, 0, 50));
                 g2d.fillRect((int) x, (int) y, boxWidth, (int) classBoxHeight);
                 g2d.setColor(Color.BLACK);
             }
 
+            //Draw the field and method boxes and the class name
             g2d.drawRect((int)x, (int)fieldsY, boxWidth, (int)(fieldsTextY - fieldsY));
             g2d.drawRect((int)x, (int)methodsY, boxWidth, (int)(methodsTextY - methodsY));
             textX = (int) (x + textPosition);
             g2d.drawString(className, textX, textY);
 
+            //Store the top x and y centre values of the main class box in the hashmap
             xTop.put(className, (textX + halfTextWidth));
             yTop.put(className, (int) (y));
 
+            //Store the bottom x and y centre values of the main class box in the hashmap
             xBottom.put(className, (textX + halfTextWidth));
             yBottom.put(className, (int)(y + classBoxHeight));
         }
 
+        //Section for drawing the lines between classes
         for (Map.Entry<String, ClassLayout> entry : layout.entrySet()) {
             String className = entry.getKey();
             ClassLayout cl = entry.getValue();
 
+            //Get the links
             for (ReflectionData.Link classLink : cl.classLinks()) {
                 if(className.equals(classLink.from())){
 
+                    //Get the starting x and y values for the top of the current class
                     Integer sX = xTop.get(className);
                     Integer sY = yTop.get(className);
 
+                    //Get the ending x and y values for the bottom of the 'to' class
                     Integer eX = xBottom.get(classLink.to());
                     Integer eY = yBottom.get(classLink.to());
 
+                    //Check if all values are non-null otherwise can't be drawn
                     if (sX != null && sY != null && eX != null && eY != null) {
+                        //If it is as dependency - draw a dashed line
                         if(classLink.type() == ReflectionData.LinkType.DEPENDENCY){
                             float[] dashPattern = {5, 5};
                             Stroke dashedStroke = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, dashPattern, 0);
                             g2d.setStroke(dashedStroke);
                         }
+                        //If normal class to superclass draw regular line and reset stroke for when a dashed line is used
                         g2d.drawLine(sX, sY, eX, eY);
                         g2d.setStroke(new BasicStroke());
                     }
