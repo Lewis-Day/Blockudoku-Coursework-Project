@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 public class RunUMLDiagram {
 
     //Adds classes to an arraylist then gets diagram data, gets layout then gets diagram
@@ -14,6 +15,7 @@ public class RunUMLDiagram {
         classes.add(MyCircle.class);
         classes.add(MyEllipse.class);
         classes.add(Connector.class);
+        classes.add(MySuperShape.class);
         System.out.println(classes);
         System.out.println();
         ReflectionData.DiagramData data = new ProcessClasses().process(classes);
