@@ -15,5 +15,6 @@ public class DrawableCircle extends Circle implements Drawable {
     public void draw(Graphics2D g) {
         // todo: implement
         // draw a filled circle centre at position with radius
+        g.setColor(color);
     }
 }

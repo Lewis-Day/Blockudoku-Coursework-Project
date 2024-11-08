@@ -15,11 +15,19 @@ public class Polygon extends MovableShape {
 
     public double area() {
         // todo: implement using the shoelace formula
-        return 0;
+        return 0.0;
     }
 
     public double perimeter() {
         // todo: implement by summing the lengths of the edges
-        return 0;
+        double sum = 0;
+
+        for (Vec2d vertex : vertices) {
+            for(int i = 1; i<vertices.size(); i++){
+                sum = sum + vertex.distance(vertices.get(i));
+            }
+        }
+
+        return sum;
     }
 }

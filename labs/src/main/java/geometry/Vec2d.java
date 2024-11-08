@@ -8,7 +8,7 @@ public record Vec2d(double x, double y) {
 
     public double magnitude() {
         // todo: implement
-        return 0;
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
 
     public Vec2d add(Vec2d other) {
@@ -17,17 +17,17 @@ public record Vec2d(double x, double y) {
 
     public Vec2d subtract(Vec2d other) {
         // todo: implement
-        return null;
+        return new Vec2d(x - other.x, y - other.y);
     }
 
     public Vec2d multiply(double scalar) {
         // todo: implement
-        return null;
+        return new Vec2d(x * scalar, y * scalar);
     }
 
     public double dot(Vec2d other) {
         // todo: implement
-        return 0;
+        return ((this.x * other.x)+(this.y * other.y));
     }
 
     public Vec2d perpendicular() {
