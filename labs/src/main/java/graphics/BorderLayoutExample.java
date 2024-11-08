@@ -4,8 +4,8 @@ import java.awt.*;
 
 class ColorComponent extends JComponent{
 
-    public Color colour;
-    public Dimension dimension;
+    Color colour;
+    Dimension dimension;
 
     public ColorComponent(Color borderColour, Dimension borderDimension) {
         this.colour = borderColour;
