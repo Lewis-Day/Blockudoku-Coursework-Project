@@ -15,7 +15,18 @@ public class Polygon extends MovableShape {
 
     public double area() {
         // todo: implement using the shoelace formula
-        return 0.0;
+        double sum1 = 0;
+        double sum2 = 0;
+
+        for (int i = 0; i < vertices.size()-1; i++) {
+            sum1 += vertices.get(i).x() * vertices.get(i+1).y();
+            sum2 += vertices.get(i).y() * vertices.get(i+1).x();
+        }
+
+        sum1 += vertices.get(vertices.size()-1).x() * vertices.get(0).y();
+        sum2 += vertices.get(vertices.size()-1).y() * vertices.get(0).x();
+
+        return 0.5 * Math.abs(sum1 - sum2);
     }
 
     public double perimeter() {

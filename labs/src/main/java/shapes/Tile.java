@@ -2,7 +2,7 @@ package shapes;
 
 import geometry.PolyGeometry;
 import geometry.Vec2d;
-
+import geometry.PolyGeometry;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -18,19 +18,19 @@ public class Tile extends DrawablePolygon {
     // use this to help select a tile
     public boolean contains(Vec2d point) {
         // todo: implement
-        return false;
+        return PolyGeometry.contains(vertices, point);
     }
 
     // use this to check if a tile is inside the box
     public boolean contains(Tile other) {
         // todo: implement
-        return false;
+        return PolyGeometry.contains(this.vertices, other.vertices);
     }
 
     // use this to check if a tile overlaps another tile
     public boolean intersects(Tile other) {
         // todo: remove for sample solution
-        return false;
+        return PolyGeometry.polygonsOverlap(this.vertices, other.vertices);
     }
 }
 

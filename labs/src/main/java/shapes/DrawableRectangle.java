@@ -15,7 +15,8 @@ public class DrawableRectangle extends Rectangle implements Drawable {
     public void draw(Graphics2D g) {
         // todo: implement
         // draw a filled rectangle with width and height centred at position
+        Vec2d position = getPosition();
         g.setColor(color);
-        g.fillRect(0, 0, (int)super.width, (int)super.height);
+        g.fillRect((int)position.x(), (int)position.y(), (int)super.width, (int)super.height);
     }
 }
