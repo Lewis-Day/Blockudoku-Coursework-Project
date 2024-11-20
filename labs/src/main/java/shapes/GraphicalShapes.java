@@ -19,7 +19,8 @@ public class GraphicalShapes {
         JPanel panel = new JPanel() {
             DrawableCircle circle = new DrawableCircle(new Vec2d(100, 200), 50, Color.blue);
             DrawableRectangle rectangle = new DrawableRectangle(new Vec2d(250, 200), 100, 100, Color.red);
-            DrawablePolygon polygon = new DrawablePolygon(new Vec2d(325, 150), new ArrayList<>(List.of(
+            //Changed x and y coordinates of the polygon to 400 and 200
+            DrawablePolygon polygon = new DrawablePolygon(new Vec2d(400, 200), new ArrayList<>(List.of(
                     new Vec2d(0, 0),
                     new Vec2d(100, 0),
                     new Vec2d(150, 50),

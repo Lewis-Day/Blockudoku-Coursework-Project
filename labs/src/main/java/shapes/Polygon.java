@@ -33,10 +33,10 @@ public class Polygon extends MovableShape {
         // todo: implement by summing the lengths of the edges
         double sum = 0;
 
-        for (Vec2d vertex : vertices) {
-            for(int i = 1; i<vertices.size(); i++){
-                sum = sum + vertex.distance(vertices.get(i));
-            }
+        for (int i=0; i<vertices.size(); i++) {
+
+            sum = sum + vertices.get(i).distance(vertices.get((i+1) % vertices.size()));
+
         }
 
         return sum;
