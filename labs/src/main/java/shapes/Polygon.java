@@ -34,9 +34,7 @@ public class Polygon extends MovableShape {
         double sum = 0;
 
         for (int i=0; i<vertices.size(); i++) {
-
             sum = sum + vertices.get(i).distance(vertices.get((i+1) % vertices.size()));
-
         }
 
         return sum;

@@ -32,6 +32,8 @@ public class PuzzleModel {
         for (int i = tiles.size() - 1; i >= 0; i--) {
             Tile tile = tiles.get(i);
             if (tile.contains(point)) {
+                tiles.remove(tile);
+                tiles.add(tile);
                 return tile;
             }
         }
