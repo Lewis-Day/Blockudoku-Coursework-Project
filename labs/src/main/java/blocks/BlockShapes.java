@@ -102,6 +102,9 @@ public class BlockShapes {
                 new Shape(List.of(new Cell(0, 0), new Cell(1, 0), new Cell(2, 0), new Cell(3, 0))),
                 new Shape(List.of(new Cell(0, 0), new Cell(0, 1), new Cell(0, 2), new Cell(0, 3))),
                 new Shape(List.of(new Cell(0, 0), new Cell(0, 1), new Cell(0, 2)))
+
+
+                // todo: implement extra shapes for extra 1%
         ));
 
         public ArrayList<Shape> getShapes() {
