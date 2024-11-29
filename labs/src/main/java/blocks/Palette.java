@@ -2,6 +2,7 @@ package blocks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import blocks.BlockShapes.Shape;
 import blocks.BlockShapes.ShapeSet;
@@ -28,7 +29,15 @@ public class Palette {
         // todo: implement
 
         // return a list of shapes that are in the palette - could use streams to filter this
-        return new ArrayList<>();
+
+        ArrayList<Shape> shapesInPalette = new ArrayList<>();
+
+        for (Sprite sprite : sprites) {
+            if (sprite.state == SpriteState.IN_PALETTE || sprite.state == SpriteState.IN_PLAY) {
+                shapesInPalette.add(sprite.shape);
+            }
+        }
+        return shapesInPalette;
     }
 
     public List<Sprite> getSprites() {
@@ -39,6 +48,11 @@ public class Palette {
     // and the size of the cells - the sprite location is already in pixel coordinates
     public Sprite getSprite(PixelLoc mousePoint, int cellSize) {
         // todo: implement
+        for (Sprite sprite : sprites) {
+            if(sprite.contains(mousePoint, cellSize)){
+                return sprite;
+            }
+        }
         return null;
     }
 
@@ -57,6 +71,15 @@ public class Palette {
         // todo: implement
 
         // layout the sprites in the palette
+        int margin = x0;
+        int xCoord = x0;
+
+        for(Sprite sprite:sprites){
+            sprite.px = xCoord;
+            sprite.py = y0;
+
+            xCoord = xCoord + cellSize + margin;
+        }
     }
 
     public void replenish() {
@@ -66,6 +89,17 @@ public class Palette {
         }
         // clear the sprites and add new randomly selected shapes
         sprites.clear();
+
+        ArrayList<Shape> shapes = getShapes();
+        Random randomGen = new Random();
+
+        for(int i = 0; i<nShapes; i++){
+            int shapeLoc = randomGen.nextInt(shapes.size());
+            Shape shape = shapes.get(shapeLoc);
+            Sprite sprite = new Sprite(shape, 0, 0);
+            sprite.state = SpriteState.IN_PALETTE;
+            sprites.add(sprite);
+        }
 
         System.out.println("Replenished: " + sprites);
     }
