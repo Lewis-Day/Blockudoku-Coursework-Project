@@ -37,10 +37,26 @@ public class GameView extends JComponent {
     private void paintShapePalette(Graphics g, int cellSize) {
         // paint a background colour
         // then get the list of current shapes from the palette
+        Graphics2D g2d = (Graphics2D) g;
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(margin, margin + ModelInterface.height * cellSize, ModelInterface.width * cellSize, shapeRegionHeight);
         for (Sprite sprite : palette.getSprites()) {
             // todo: paint the sprite in the palette
+            int x = sprite.px;
+            int y = sprite.py;
+
+            for(Cell cell: sprite.shape){
+                int cellx = x + cell.x() * cellSize;
+                int celly = y + cell.y() * cellSize;
+
+                g.setColor(Color.BLUE);
+                g.fillRect(cellx, celly, cellSize, cellSize);
+
+                g2d.setColor(Color.BLACK);
+                g2d.setStroke(new BasicStroke(1));
+                g2d.drawRect(cellx, celly, cellSize, cellSize);
+            }
+
         }
     }
 

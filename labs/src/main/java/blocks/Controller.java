@@ -48,6 +48,15 @@ public class Controller extends MouseAdapter {
 
     public void mouseDragged(MouseEvent e) {
         // todo: implement
+        System.out.println("Mouse dragged: " + e);
+
+        if (selectedSprite == null) {
+            return;
+        }
+
+        selectedSprite.px = e.getX();
+        selectedSprite.py = e.getY();
+        view.repaint();
     }
 
     public void mouseReleased(MouseEvent e) {

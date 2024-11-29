@@ -43,25 +43,51 @@ public class Model2dArray extends State2dArray implements ModelInterface {
 
     public boolean canPlace(Piece piece) {
         // todo: implement
-
         // check if the shape can be placed at this loc
+        List<Cell> cells = piece.cells();
+
+        for (Cell cell : cells) {
+            if (cell.x() < 0 || cell.x() >= width || cell.y() < 0 || cell.y() >= height) {
+                return false;
+            }
+        }
+
+        for(Cell cell : cells){
+            if(grid[cell.x()][cell.y()]){
+                return false;
+            }
+        }
         return true;
     }
 
     @Override
     public void place(Piece piece) {
         // todo: implement
+        if(canPlace(piece)){
+            for(Cell cell: piece.cells()){
+                grid[cell.x()][cell.y()] = true;
+            }
+        }
     }
 
     @Override
     public void remove(Shape region) {
         // todo: implement
+        for(Cell cells: region){
+            grid[cells.x()][cells.y()] = false;
+        }
     }
 
     public boolean isComplete(Shape region) {
         // todo: implement
         // check if the shape is complete, i.e. all cells are occupied
-        return true;
+        for(Cell cells: region){
+
+            if(grid[cells.x()][cells.y()]){
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean wouldBeComplete(Shape region, List<Cell> toAdd) {
@@ -81,6 +107,16 @@ public class Model2dArray extends State2dArray implements ModelInterface {
         // todo: implement
         // check if the shape can be placed anywhere on the grid
         // by checking if it can be placed at any loc
+        for(int i = 0; i<width; i++){
+            for(int j = 0; j<height; j++){
+                Piece piece = new Piece(shape, new Cell(i, j));
+
+                if(canPlace(piece)){
+                    return true;
+                }
+            }
+
+        }
         return false;
     }
 

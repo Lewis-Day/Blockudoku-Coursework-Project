@@ -71,7 +71,7 @@ public class Palette {
         // todo: implement
 
         // layout the sprites in the palette
-        int margin = x0;
+        int margin = 100;
         int xCoord = x0;
 
         for(Sprite sprite:sprites){
