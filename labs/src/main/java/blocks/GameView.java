@@ -45,16 +45,32 @@ public class GameView extends JComponent {
             int x = sprite.px;
             int y = sprite.py;
 
+            int padding = 2;
+
             for(Cell cell: sprite.shape){
-                int cellx = x + cell.x() * cellSize;
-                int celly = y + cell.y() * cellSize;
+                if(sprite.state == SpriteState.IN_PLAY){
 
-                g.setColor(Color.BLUE);
-                g.fillRect(cellx, celly, cellSize, cellSize);
+                    int drawSize = shrinkSize - padding;
+                    int cellx = x + cell.x() * cellSize + padding;
+                    int celly = y + cell.y() * cellSize + padding;
 
-                g2d.setColor(Color.BLACK);
-                g2d.setStroke(new BasicStroke(1));
-                g2d.drawRect(cellx, celly, cellSize, cellSize);
+                    g.setColor(Color.BLUE);
+                    g.fillRect(cellx, celly, drawSize, drawSize);
+                    g2d.setColor(Color.BLACK);
+                    g2d.setStroke(new BasicStroke(1));
+                    g2d.drawRect(cellx, celly, drawSize, drawSize);
+                }
+                else {
+                    int cellx = x + cell.x() * paletteCellSize;
+                    int celly = y + cell.y() * paletteCellSize;
+
+                    g.setColor(Color.BLUE);
+                    g.fillRect(cellx, celly, paletteCellSize, paletteCellSize);
+
+                    g2d.setColor(Color.BLACK);
+                    g2d.setStroke(new BasicStroke(1));
+                    g2d.drawRect(cellx, celly, paletteCellSize, paletteCellSize);
+                }
             }
 
         }
@@ -62,11 +78,32 @@ public class GameView extends JComponent {
 
     private void paintPoppableRegions(Graphics g, int cellSize) {
         // todo: implement
+        if (poppableRegions == null || poppableRegions.isEmpty()) {
+            return;
+        }
+
+        g.setColor(new Color(128, 128, 128, 100));
+        for (Shape region : poppableRegions) {
+            for (Cell cell : region) {
+                    int x = margin + cell.x() * cellSize;
+                    int y = margin + cell.y() * cellSize;
+                    g.fillRect(x, y, cellSize, cellSize);
+            }
+        }
 
     }
 
     private void paintGhostShape(Graphics g, int cellSize) {
         // todo: implement
+        if(ghostShape == null){
+            return;
+        }
+        g.setColor(new Color(0, 255, 255, 100));
+        for (Cell cell : ghostShape.cells()) {
+            int x = margin + cell.x() * cellSize;
+            int y = margin + cell.y() * cellSize;
+            g.fillRect(x, y, cellSize, cellSize);
+        }
 
         System.out.println("painting ghost shape: " + ghostShape);
     }
@@ -84,8 +121,15 @@ public class GameView extends JComponent {
                 // todo: paint the cells that are occupied in a different colour
                 g.setColor(Color.WHITE);
                 g.fill3DRect(x0 + x * cellSize, y0 + y * cellSize, cellSize, cellSize, true);
+
+                for(Cell cell: occupiedCells){
+                    g.setColor(new Color(0, 255, 0, 200));
+                    g.fill3DRect(x0+cell.x()*cellSize, y0+cell.y()*cellSize, cellSize, cellSize, true);
+                }
+
             }
         }
+
     }
 
     private void paintMiniGrids(Graphics2D g) {

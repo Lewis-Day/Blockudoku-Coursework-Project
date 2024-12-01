@@ -56,11 +56,38 @@ public class Controller extends MouseAdapter {
 
         selectedSprite.px = e.getX();
         selectedSprite.py = e.getY();
+
+        ghostShape = selectedSprite.snapToGrid(view.margin, view.cellSize);
+
+        if(ghostShape != null && model.canPlace(ghostShape)){
+            view.ghostShape = ghostShape;
+            view.poppableRegions = model.getPoppableRegions(ghostShape);
+        }
+        else {
+            view.ghostShape = null;
+        }
         view.repaint();
     }
 
     public void mouseReleased(MouseEvent e) {
         // todo: implement
+
+        Piece piece = selectedSprite.snapToGrid(view.margin, view.cellSize);
+
+        if(model.canPlace(piece)){
+            model.place(piece);
+            selectedSprite.state = SpriteState.PLACED;
+            palette.sprites.remove(selectedSprite);
+            palette.replenish();
+            palette.doLayout(view.margin, view.margin + ModelInterface.height * view.cellSize, view.paletteCellSize);
+            if(model.isGameOver(palette.shapes)){
+                gameOver = true;
+            }
+
+        }
+        view.ghostShape = null;
+        view.poppableRegions = null;
+        selectedSprite = null;
 
         // update the title with the score and whether the game is over
         frame.setTitle(getTitle());

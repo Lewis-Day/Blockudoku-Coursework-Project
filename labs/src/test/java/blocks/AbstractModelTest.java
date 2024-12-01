@@ -137,4 +137,5 @@ public abstract class AbstractModelTest {
         assertTrue(model.getScore() > 0, "Score should be > 0 after popping a region: " + model.getScore());
 
     }
+
 }

@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 public class Model2dArray extends State2dArray implements ModelInterface {
     List<Shape> regions = new RegionHelper().allRegions();
 
@@ -52,6 +53,7 @@ public class Model2dArray extends State2dArray implements ModelInterface {
             }
         }
 
+
         for(Cell cell : cells){
             if(grid[cell.x()][cell.y()]){
                 return false;
@@ -67,6 +69,12 @@ public class Model2dArray extends State2dArray implements ModelInterface {
             for(Cell cell: piece.cells()){
                 grid[cell.x()][cell.y()] = true;
             }
+            List<Shape> poppable = getPoppableRegions(piece);
+            for(Shape shape: poppable){
+                remove(shape);
+                score = score + 10;
+            }
+            poppable = new ArrayList<>();
         }
     }
 
@@ -83,23 +91,36 @@ public class Model2dArray extends State2dArray implements ModelInterface {
         // check if the shape is complete, i.e. all cells are occupied
         for(Cell cells: region){
 
-            if(grid[cells.x()][cells.y()]){
-                return true;
+            if(!grid[cells.x()][cells.y()]){
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private boolean wouldBeComplete(Shape region, List<Cell> toAdd) {
         // todo: implement
         // check if the shape is complete, i.e. all cells are occupied
-        return true;
+        Set<Cell> occupied = getOccupiedCells();
+        int completeCells = 0;
+        // IntelliJ simplified for loop to this line
+        occupied.addAll(toAdd);
+        if(occupied.containsAll(region)){
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean isGameOver(List<Shape> palettePieces) {
         // todo: implement
         // if any shape in the palette can be placed, the game is not over
+
+        for(Shape piece: palettePieces){
+            if(canPlaceAnywhere(piece)){
+                return false;
+            }
+        }
         return true;
     }
 
@@ -107,6 +128,7 @@ public class Model2dArray extends State2dArray implements ModelInterface {
         // todo: implement
         // check if the shape can be placed anywhere on the grid
         // by checking if it can be placed at any loc
+
         for(int i = 0; i<width; i++){
             for(int j = 0; j<height; j++){
                 Piece piece = new Piece(shape, new Cell(i, j));
@@ -125,6 +147,11 @@ public class Model2dArray extends State2dArray implements ModelInterface {
         // todo: implement
         // iterate over the regions
         List<Shape> poppable = new ArrayList<>();
+        for(Shape region: regions){
+            if(wouldBeComplete(region, piece.cells())){
+                poppable.add(region);
+            }
+        }
         return poppable;
     }
 
@@ -132,6 +159,14 @@ public class Model2dArray extends State2dArray implements ModelInterface {
     public Set<Cell> getOccupiedCells() {
         // todo: implement
         Set<Cell> occupiedCells = new HashSet<>();
+        for(int i = 0; i<width; i++){
+            for(int j = 0; j<height; j++){
+                if(grid[i][j]){
+                    occupiedCells.add(new Cell(i, j));
+                }
+            }
+
+        }
         return occupiedCells;
     }
 }
