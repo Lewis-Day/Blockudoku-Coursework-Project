@@ -21,6 +21,8 @@ import java.util.Set;
 
 
 public class Model2dArray extends State2dArray implements ModelInterface {
+
+    private int scoreStreak = 0;
     List<Shape> regions = new RegionHelper().allRegions();
 
     public Model2dArray() {
@@ -70,11 +72,19 @@ public class Model2dArray extends State2dArray implements ModelInterface {
                 grid[cell.x()][cell.y()] = true;
             }
             List<Shape> poppable = getPoppableRegions(piece);
-            for(Shape shape: poppable){
-                remove(shape);
-                score = score + 10;
+            if(!poppable.isEmpty()){
+                scoreStreak++;
+
+                for(Shape shape: poppable){
+                    remove(shape);
+                    score = score + (10 * scoreStreak);
+                }
             }
-            poppable = new ArrayList<>();
+            else{
+                scoreStreak = 0;
+            }
+
+
         }
     }
 
@@ -118,9 +128,11 @@ public class Model2dArray extends State2dArray implements ModelInterface {
 
         for(Shape piece: palettePieces){
             if(canPlaceAnywhere(piece)){
+                System.out.println("Game is not over, can place piece.");
                 return false;
             }
         }
+        System.out.println("Game over, no pieces can be placed.");
         return true;
     }
 
@@ -134,11 +146,13 @@ public class Model2dArray extends State2dArray implements ModelInterface {
                 Piece piece = new Piece(shape, new Cell(i, j));
 
                 if(canPlace(piece)){
+                    System.out.println("Can place piece at (" + i + "," + j + ")");
                     return true;
                 }
             }
 
         }
+        System.out.println("Cannot place piece anywhere.");
         return false;
     }
 
