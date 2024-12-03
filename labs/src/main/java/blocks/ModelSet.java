@@ -41,7 +41,13 @@ public class ModelSet extends StateSet implements ModelInterface {
         // use a stream to check if all the cells are not occupied
 
         // todo: implement
-        return false;
+        List<Cell> cells = piece.cells();
+
+        return cells.stream().allMatch(cell ->
+                cell.x() >= 0 && cell.x() < width &&
+                cell.y() >= 0 && cell.y() < height &&
+                !occupiedCells.contains(cell)
+        );
     }
 
     @Override
@@ -50,19 +56,32 @@ public class ModelSet extends StateSet implements ModelInterface {
         // add the cells in the Piece to the occupiedCells set
         // then remove all the poppable regions
         // increment the score as function of the regions popped
+
+        if(canPlace(piece)){
+            occupiedCells.addAll(piece.cells());
+            List<Shape> poppable = getPoppableRegions(piece);
+            for(Shape shape : poppable){
+                remove(shape);
+                score = score + 10;
+            }
+
+        }
     }
 
     @Override
     public void remove(Shape region) {
         // todo: implement
         // remove the cells from the occupiedCells set
+        for(Cell cell: region){
+            occupiedCells.remove(cell);
+        }
     }
 
     @Override
     public boolean isComplete(Shape region) {
         // todo: implement
         // use a stream to check if all the cells in the region are occupied
-        return false;
+        return region.stream().allMatch(occupiedCells::contains);
     }
 
     @Override
@@ -71,7 +90,7 @@ public class ModelSet extends StateSet implements ModelInterface {
         // if any shape in the palette can be placed, the game is not over
         // use a helper function to check whether an indiviual shape can be placed anywhere
         // and
-        return false;
+        return palettePieces.stream().noneMatch(this::canPlaceAnywhere);
     }
 
     public boolean canPlaceAnywhere(Shape shape) {
@@ -79,6 +98,12 @@ public class ModelSet extends StateSet implements ModelInterface {
 
         // check if the shape can be placed anywhere on the grid
         // by checking if it can be placed at any loc
+        for(Cell cell:locations){
+            Piece piece = new Piece(shape, cell);
+            if(canPlace(piece)){
+                return true;
+            }
+        }
         return false;
     }
 
@@ -90,15 +115,27 @@ public class ModelSet extends StateSet implements ModelInterface {
         // to do this we need to iterate over the regions and check if the piece overlaps enough to complete it
         // i.e. we can make a new set of occupied cells and check if the region is complete
         // if it is complete, we add it to the list of regions to be popped
+        Set<Cell> tempOccupied = new HashSet<>();
+        tempOccupied.addAll(getOccupiedCells());
+        tempOccupied.addAll(piece.cells());
+
+        List<Shape> poppables = new ArrayList<>();
+
+        for(Shape region : regions){
+            if(region.stream().allMatch(tempOccupied::contains)){
+                poppables.add(region);
+            }
+        }
 
 
-        return new ArrayList<>();
+
+        return poppables;
 
     }
 
     @Override
     public Set<Cell> getOccupiedCells() {
         // todo: implement
-        return new HashSet<>();
+        return occupiedCells;
     }
 }

@@ -106,8 +106,8 @@ public class Controller extends MouseAdapter {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        ModelInterface model = new ModelSet();
-        ModelInterface model = new Model2dArray();
+        ModelInterface model = new ModelSet();
+//        ModelInterface model = new Model2dArray();
         Palette palette = new Palette();
         GameView view = new GameView(model, palette);
         Controller controller = new Controller(view, model, palette, frame);
