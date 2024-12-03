@@ -54,8 +54,8 @@ public class Controller extends MouseAdapter {
             return;
         }
 
-        selectedSprite.px = e.getX();
-        selectedSprite.py = e.getY();
+        selectedSprite.px = e.getX() - view.cellSize / 2;
+        selectedSprite.py = e.getY() - view.cellSize / 2;
 
         ghostShape = selectedSprite.snapToGrid(view.margin, view.cellSize);
 
@@ -77,12 +77,18 @@ public class Controller extends MouseAdapter {
         if(model.canPlace(piece)){
             model.place(piece);
             selectedSprite.state = SpriteState.PLACED;
+            palette.shapes.remove(selectedSprite.shape);
             palette.sprites.remove(selectedSprite);
             palette.replenish();
             palette.doLayout(view.margin, view.margin + ModelInterface.height * view.cellSize, view.paletteCellSize);
             if(model.isGameOver(palette.shapes)){
                 gameOver = true;
             }
+
+        }
+        else{
+
+            gameOver = true;
 
         }
         view.ghostShape = null;
@@ -106,8 +112,8 @@ public class Controller extends MouseAdapter {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ModelInterface model = new ModelSet();
-//        ModelInterface model = new Model2dArray();
+//        ModelInterface model = new ModelSet();
+        ModelInterface model = new Model2dArray();
         Palette palette = new Palette();
         GameView view = new GameView(model, palette);
         Controller controller = new Controller(view, model, palette, frame);

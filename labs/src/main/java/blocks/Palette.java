@@ -37,6 +37,7 @@ public class Palette {
                 shapesInPalette.add(sprite.shape);
             }
         }
+        System.out.println("Shapes in Palette: " + shapesInPalette);
         return shapesInPalette;
     }
 

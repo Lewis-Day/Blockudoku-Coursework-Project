@@ -51,6 +51,7 @@ public class Model2dArray extends State2dArray implements ModelInterface {
 
         for (Cell cell : cells) {
             if (cell.x() < 0 || cell.x() >= width || cell.y() < 0 || cell.y() >= height) {
+                System.out.println("Piece out of bounds: " + cell);
                 return false;
             }
         }
@@ -58,6 +59,7 @@ public class Model2dArray extends State2dArray implements ModelInterface {
 
         for(Cell cell : cells){
             if(grid[cell.x()][cell.y()]){
+                System.out.println("Cell already occupied: " + cell);
                 return false;
             }
         }
