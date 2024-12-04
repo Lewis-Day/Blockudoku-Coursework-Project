@@ -4,8 +4,21 @@ import java.io.FileOutputStream
 
 plugins {
     java
-    jacoco
-//    id("com.github.spotbugs") version "5.0.13"
+    application
+}
+
+application {
+    // Default main class, which you can override with -PmainClass
+    // run at the CL in labs dir with:  ./gradlew run
+    mainClass.set("shapes.TangramPuzzle")
+}
+
+tasks.named<JavaExec>("run") {
+    // e.g. to run blocks puzzle, in labs dir:  ./gradlew run -PmainClass=blocks.Controller
+    val mainClassName: String? = project.findProperty("mainClass") as String?
+    if (mainClassName != null) {
+        mainClass.set(mainClassName)
+    }
 }
 
 group = "ecs658"
@@ -15,17 +28,26 @@ repositories {
     mavenCentral()
 }
 
+
+
 dependencies {
     // JUnit Jupiter API and Engine for testing
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+
+    implementation("org.junit.platform:junit-platform-launcher:1.10.0")
+    implementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    implementation("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+
+
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+
     // Other dependencies
-    // https://mvnrepository.com/artifact/com.github.mauricioaniche/ck
     implementation("com.github.mauricioaniche:ck:0.7.0")
     implementation("black.ninia:jep:4.2.0")
     implementation("com.google.code.gson:gson:2.8.9")
-    // SpotBugs for static code analysis
-//    spotbugs("com.github.spotbugs:spotbugs:4.7.3")
+    implementation("org.eclipse.jdt:org.eclipse.jdt.core:3.29.0") // Use the latest stable version
+
 }
 
 
@@ -33,6 +55,35 @@ tasks.withType<JavaExec> {
     systemProperty("java.library.path", "/opt/miniconda3/lib/python3.12/site-packages/jep")
 }
 
+tasks.withType<JavaCompile> {
+    // Ignore compilation errors
+//    options.isFailOnError = false
+}
+
+
+sourceSets {
+    test {
+        java {
+            // use this for the gradle copy task to evaluate student code
+            // Clear any default sources that may come from the student repo
+            setSrcDirs(emptyList<String>())
+
+            // Add only your test source directory
+            srcDir("./src/test/java")
+        }
+    }
+}
+
+
+// example of how to exclude a file or package from the main source set
+//sourceSets {
+//    main {
+//        java {
+//            exclude("**/HelloWorld.java")
+//        }
+//    }
+//}
+//
 tasks.register<JavaExec>("ckMetrics") {
     group = "verification"
     description = "Run CK Metrics"
@@ -44,60 +95,37 @@ tasks.register<JavaExec>("ckMetrics") {
     classpath = sourceSets.main.get().runtimeClasspath
 
     // Set the main class to your CKMetricsRunner class
-    mainClass.set("metrics.CKMetricsRunner")
+    mainClass.set("metrics.CKMetricsRunnerWithMethods")
 }
 
 
-val ckVersion = "0.7.0"
+// New JDT Complexity Task
+tasks.register<JavaExec>("jdtComplexity") {
+    group = "verification"
+    description = "Run JDT Cyclomatic Complexity Analysis"
 
+    // Ensure classes are compiled before running JDT Complexity
+    dependsOn(tasks.classes)
+
+    // Set the classpath to include all dependencies
+    classpath = sourceSets.main.get().runtimeClasspath
+
+    // Set the main class to your CyclomaticComplexityCalculator class
+    mainClass.set("metrics.CyclomaticComplexityCalculator")
+}
 
 
 tasks.test {
+    ignoreFailures = true
     useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport) // Generate JaCoCo report after tests
 }
 
-jacoco {
-    toolVersion = "0.8.10" // Use the latest JaCoCo version
-}
 
-tasks.jacocoTestReport {
-    dependsOn(tasks.test) // Ensure tests run before generating the report
-    reports {
-        xml.required.set(true)
-        csv.required.set(false)
-        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
-    }
-}
-
-//tasks.withType<com.github.spotbugs.snom.SpotBugsTask>().configureEach {
-//    reports {
-//        xml.required.set(false)
-//        html.required.set(true)
-//        // Optional: Set a custom stylesheet for the HTML report
-//        // html.stylesheet.set(resources.text.fromFile("spotbugs.css"))
-//    }
-//}
 tasks.check {
     dependsOn(
         tasks.test,
-//        tasks.ckMetrics,
         tasks.named("ckMetrics"), // Use named to reference ckMetrics properly
-
-//        tasks.spotbugsMain
+        tasks.named("jdtComplexity"),
     )
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs("src/main/java")
-        }
-    }
-    test {
-        java {
-            srcDirs("src/test/java")
-        }
-    }
 }
 
