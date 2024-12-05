@@ -8,7 +8,7 @@ import com.github.mauricioaniche.ck.CKNotifier;
 public class CKMetricsRunner {
     public static void main(String[] args) {
         // The path to the source code directory to analyze
-        String pathToSource = "src/main/java";
+        String pathToSource = "labs/src/main/java/blocks";
 
         // Create a CK instance and run it
         CK ck = new CK();

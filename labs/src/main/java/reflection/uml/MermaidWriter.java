@@ -2,7 +2,7 @@ package reflection.uml;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import blocks.*;
 import reflection.uml.ReflectionData.*;
 
 public class MermaidWriter {
@@ -41,12 +41,25 @@ public class MermaidWriter {
     public static void main(String[] args) {
         List<Class<?>> classes = new ArrayList<>();
         // add in all the classes we wish to generate UML for
-        classes.add(MyShape.class);
-        classes.add(MyCircle.class);
-//        classes.add(MyCircle.InnerStatic.class);
-        classes.add(MyEllipse.class);
-        classes.add(Connector.class);
-        System.out.println(classes);
+        classes.add(blocks.BlockShapes.class);
+        classes.add(blocks.Controller.class);
+        classes.add(blocks.GameView.class);
+        classes.add(blocks.Model2dArray.class);
+        classes.add(blocks.ModelSet.class);
+        classes.add(blocks.Palette.class);
+        classes.add(blocks.RegionHelper.class);
+        classes.add(State2dArray.class);
+        classes.add(StateSet.class);
+        classes.add(ModelInterface.class);
+        classes.add(BlockShapes.Sprite.class);
+        classes.add(BlockShapes.Shape.class);
+        classes.add(BlockShapes.Cell.class);
+        classes.add(BlockShapes.Piece.class);
+        classes.add(BlockShapes.SpriteState.class);
+        classes.add(BlockShapes.PixelLoc.class);
+
+
+//        System.out.println(classes);
         System.out.println();
         DiagramData dd = new ProcessClasses().process(classes);
         System.out.println();

@@ -11,6 +11,7 @@ import java.util.Set;
 
 public class ModelSet extends StateSet implements ModelInterface {
 
+    int scoreStreak;
     Set<Cell> locations = new HashSet<>();
     List<Shape> regions = new RegionHelper().allRegions();
 
@@ -60,11 +61,17 @@ public class ModelSet extends StateSet implements ModelInterface {
         if(canPlace(piece)){
             occupiedCells.addAll(piece.cells());
             List<Shape> poppable = getPoppableRegions(piece);
-            for(Shape shape : poppable){
-                remove(shape);
-                score = score + 10;
-            }
+            if(!poppable.isEmpty()){
+                scoreStreak++;
 
+                for(Shape shape: poppable){
+                    remove(shape);
+                    score = score + (10 * scoreStreak);
+                }
+            }
+            else{
+                scoreStreak = 0;
+            }
         }
     }
 

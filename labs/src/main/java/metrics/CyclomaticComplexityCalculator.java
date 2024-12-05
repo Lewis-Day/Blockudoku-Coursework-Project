@@ -11,7 +11,7 @@ public class CyclomaticComplexityCalculator {
 
     public static void main(String[] args) {
         // Specify the directory containing Java source files
-        String sourceDirectory = "src/main/java/"; // Update this path as needed
+        String sourceDirectory = "labs/src/main/java/blocks/"; // Update this path as needed
         String filePattern = args.length > 0 ? args[0] : "";
 
         System.out.println("File pattern: " + filePattern);
