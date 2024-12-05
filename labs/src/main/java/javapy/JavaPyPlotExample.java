@@ -60,17 +60,17 @@ public class JavaPyPlotExample {
 
     public static GraphDataResultSet GenerateResults(int numRuns){
         List<Supplier<IntList>> listMakers = new ArrayList<>();
-//        listMakers.add(IntArrayList::new);
-//        listMakers.add(IntLinkedList::new);
+        listMakers.add(IntArrayList::new);
+        listMakers.add(IntLinkedList::new);
         listMakers.add(EfficientIntArrayList::new);
         listMakers.add(EfficientIntLinkedList::new);
         listMakers.add(() -> new GenIntListWrapper(new GenericArrayList<Integer>()));
         listMakers.add(() -> new GenIntListWrapper(new GenericLinkedList<Integer>()));
-//        listMakers.add(() -> new GenIntListWrapper(new GenericLinkedListRecord<Integer>()));
+        listMakers.add(() -> new GenIntListWrapper(new GenericLinkedListRecord<Integer>()));
 
         int initial_n = 1000;
         int n_step = 1000;
-        int n_max = 100000;
+        int n_max = 20000;
         List<Integer> xValues = new ArrayList<>();
         for (int n = initial_n; n <= n_max; n += n_step) {
             xValues.add(n);
